@@ -1,4 +1,4 @@
-name: ci
+name: Deploy mkdocs to GitHub Pages
 on:
   push:
     branches:
@@ -25,4 +25,4 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material
-      - run: mkdocs gh-deploy --force --remote-name khintz.github.io
+      - run: mkdocs gh-deploy --force --remote-branch main
