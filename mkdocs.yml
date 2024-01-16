@@ -28,6 +28,7 @@ theme:
     - navigation.instant
     - navigation.sections
     - navigation.tracking
+    - navigation.path
     - toc.follow
   logo: assets/logo.png
   favicon: images/favicon.png
@@ -37,7 +38,9 @@ theme:
 nav:
  - Welcome: index.md
  - Personal:
-     Publications: personal/publications.md
+    Publications: personal/publications.md
+ - Topics:
+    Data Assimilation: topics/dataassimilation.md
 extra_css:
   - stylesheets/extra.css
 plugins:
@@ -56,6 +59,8 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.arithmatex:
       generic: true
+  - toc:
+        permalink: ¶
 extra_javascript:
   - javascripts/tablesort.min.js
   - javascripts/tablesort.js
