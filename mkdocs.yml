@@ -54,6 +54,11 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.arithmatex:
+      generic: true
 extra_javascript:
   - javascripts/tablesort.min.js
   - javascripts/tablesort.js
+  - javascripts/mathjax.js
+  - javascripts/tex-mml-chtml.js
+  - javascripts/polyfill.min.js
