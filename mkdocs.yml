@@ -36,6 +36,8 @@ theme:
       info: octicons/info-16
 nav:
  - Welcome: index.md
+ - Personal:
+     Publications: personal/publications.md
 extra_css:
   - stylesheets/extra.css
 plugins:
