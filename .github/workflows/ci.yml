@@ -2,7 +2,7 @@ name: Deploy mkdocs to GitHub Pages
 on:
   push:
     branches:
-      - mkdocs
+      - master
 permissions:
   contents: write
 jobs:
@@ -25,4 +25,4 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material
-      - run: mkdocs gh-deploy --force --remote-branch main
+      - run: mkdocs gh-deploy --force --remote-branch mkdocs
