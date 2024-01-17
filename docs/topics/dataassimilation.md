@@ -274,3 +274,82 @@ $\mathbf{P}_b$ is essential. Its role is to spread out information from observat
 ??? tip
 
     Good To Know: $\mathbf{P}_b$ is often referred to as ”structure functions” in the literature.
+
+<figure markdown>
+  ![Image title](/images/single_obs.png){ width="400" }
+  <figcaption>Increment of assimilating a single pressure observation</figcaption>
+</figure>
+
+In the figure the difference (increment) between to analysis states is shown. A single additional pressure observation is assimilated in the second analysis. The increment is largest close to the observation and decreases with distance. The spread of the increment is determined by $\mathbf{P}_b$.
+
+### Solving for the gradient of the cost function
+
+The minimum of the cost function is obtained for $\mathbf{x}=\mathbf{x}_a$, e.g. the solution of
+
+$$
+\nabla J(\mathbf{x}_a)=0
+$$
+
+So we wish to solve for the gradient of the cost function. To simplify the problem we linearise the observation operator $H$ as
+
+$$
+H(\mathbf{x})\approx \nabla H(\mathbf{x}_b)\cdot\delta \mathbf{x}+H(\mathbf{x}_b)
+$$
+
+and assume that the analysis is close to the truth so that we can write
+
+$$
+x=\mathbf{x}_b+(\mathbf{x}-\mathbf{x}_b)
+$$
+
+assuming $\mathbf{x}-\mathbf{x}_b$ is small, $\mathbf{y}-H(\mathbf{x})$ can be written as
+
+$$
+\begin{align*}
+[\mathbf{y}-H(\mathbf{x})]=\mathbf{y}-H(\mathbf{x}_b+(\mathbf{x}-\mathbf{x}_b))\\
+=\mathbf{y}-H(\mathbf{x})-\mathbf{H}(\mathbf{x}-\mathbf{x}_b)
+\end{align*}
+$$
+
+This is an advantage as $H(\mathbf{x}_b)$ and $\mathbf{x}$ is known a priori. The cost function can now be written as
+
+$$
+\begin{align*}
+J(\mathbf{x})=&\frac{1}{2}[(\mathbf{x}-\mathbf{x}_b)^T\mathbf{P}_b^{-1}(\mathbf{x}-\mathbf{x}_b)+[(\mathbf{y}-H(\mathbf{x}_b)-\mathbf{H}(\mathbf{x}-\mathbf{x}_b)]^T\mathbf{R}^{-1} \\
+&[(\mathbf{y}-H(\mathbf{x}_b)-\mathbf{H}(\mathbf{x}-\mathbf{x}_b)])]]
+\end{align*}
+$$
+
+If we then assume that $\mathbf{R}$ is symmetric so that $\mathbf{HR}^{-1}=\mathbf{R}^{-1}\mathbf{H}$ and expanding the brackets we get
+
+$$
+\begin{align*}
+J(\mathbf{x})=&\frac{1}{2}[(\mathbf{x}-\mathbf{x}_b)^T\mathbf{P}_b^{-1}(\mathbf{x}-\mathbf{x}_b)+(\mathbf{x}-\mathbf{x}_b)^T\mathbf{H}^T\mathbf{R}^{-1}\mathbf{H}(\mathbf{x}-\mathbf{x}_b) \\
+&-(\mathbf{y}-H(\mathbf{x}_b))^T\mathbf{R}^{-1}\mathbf{H}(\mathbf{x}-\mathbf{x}_b)-(\mathbf{x}-\mathbf{x}_b)^T\mathbf{H}^T\mathbf{R}^{-1} \\
+&(\mathbf{y}-H(\mathbf{x}_b))+(\mathbf{y}-H(\mathbf{x}_b))^T\mathbf{R}^{-1}(\mathbf{y}-H(\mathbf{x}_b))]
+\end{align*}
+$$
+
+If we combine the first two terms we get
+
+$$
+\begin{align*}
+2J(\mathbf{x})=&\ (\mathbf{x}-\mathbf{x}_b)^T[\mathbf{P}_b^{-1}+\mathbf{H}^T\mathbf{R}^{-1}\mathbf{H}](\mathbf{x}-\mathbf{x}_b) \\
+&-(\mathbf{y}-H(\mathbf{x}_b))^T\mathbf{R}^{-1}\mathbf{H}(\mathbf{x}-\mathbf{x}_b) \\
+&-(\mathbf{x}-\mathbf{x}_b)^T\mathbf{H}^T\mathbf{R}^{-1}(\mathbf{y}-H(\mathbf{x}_b)) \\
+&+\text(Term\ independent\ on\ \mathbf{x}) \\
+=&\ (\mathbf{x}-\mathbf{x}_b)^T[\mathbf{P}_b^{-1}+\mathbf{H}^T\mathbf{R}^{-1}\mathbf{H}](\mathbf{x}-\mathbf{x}_b) \\
+&-2(\mathbf{y}-H(\mathbf{x}_b))^T\mathbf{R}^{-1}\mathbf{H}(\mathbf{x}-\mathbf{x}_b) \\
+&+\text(Term\ independent\ on\ \mathbf{x})
+\end{align*}
+$$
+
+Given a quadratic function $F(\mathbf{x})=\frac{1}{2}\mathbf{x}^T\mathbf{Ax}+\mathbf{d}^T\mathbf{x}+c$ the gradient is given by $\nabla F(\mathbf{x})=\mathbf{Ax}+\mathbf{d}$. Using this and setting $\nabla J(\mathbf{x})=0$ to ensure $J$ is a minimum (though it could be a maximum or a saddle point) we obtain an analytical expression for the analysis state vector $\mathbf{x}_a$.
+
+$$
+\begin{align*}
+\mathbf{x}_a = \mathbf{x}_b+(\mathbf{P}_b^{-1}+\mathbf{H}^T\mathbf{R}^{-1}\mathbf{H})^{-1}\mathbf{H}^T\mathbf{R}^{-1}(\mathbf{y}-H(\mathbf{x}_b))
+\end{align*}
+$$
+
+The is the analytical solution to {==3DVar==}. In practice it is solved by an iterative method such as the steepest descent method, as we saw in the scalar example. Unfortunately for us, it is impossible to invert such huge matrices as $\mathbf{P}_b$ so we need to find approximations. Also {==3DVar==} assumes all observations to be taken at the time of the analysis. This is not the case in reality. $\mathbf{P}_b$ is also assumed to be constant in time, which is not the case in reality (not allowed to evolve dynamically).
