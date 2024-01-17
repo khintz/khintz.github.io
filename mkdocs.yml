@@ -26,9 +26,14 @@ theme:
   features:
     - header.autohide
     - navigation.instant
+    - navigation.instant.progress
     - navigation.sections
     - navigation.tracking
+    - navigation.path
+    - navigation.top
     - toc.follow
+    - toc.integrate
+    - content.code.copy
   logo: assets/logo.png
   favicon: images/favicon.png
   icon:
@@ -37,7 +42,9 @@ theme:
 nav:
  - Welcome: index.md
  - Personal:
-     Publications: personal/publications.md
+    Publications: personal/publications.md
+ - Topics:
+    Data Assimilation: topics/dataassimilation.md
 extra_css:
   - stylesheets/extra.css
 plugins:
@@ -46,6 +53,15 @@ markdown_extensions:
   - tables
   - admonition
   - pymdownx.details
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - attr_list
+  - md_in_html
+  - footnotes
+  - admonition
   - pymdownx.tasklist:
       custom_checkbox: true
       clickable_checkbox: true
@@ -56,6 +72,9 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.arithmatex:
       generic: true
+  - toc:
+        permalink: true
+        toc_depth: 20
 extra_javascript:
   - javascripts/tablesort.min.js
   - javascripts/tablesort.js
