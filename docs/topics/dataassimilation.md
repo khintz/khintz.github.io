@@ -553,23 +553,29 @@ Here $\mathbf{K}=\mathbf{W}$ is used for consistency with the literature. $\math
 ## Optimal Interpolation (OI) equations
 
 Analysis Equation:
+
 $$
 \begin{align*}
 	\mathbf{x}_a=\mathbf{x}_b+\mathbf{W}(\mathbf{y}-\mathbf{Hx}_b)=\mathbf{x}_b+\mathbf{Wd}
 \end{align*}
 $$
+
 Optimal Weight:
+
 $$
 \begin{align*}
 	\mathbf{W}=\mathbf{H}^T\mathbf{P}_b\mathbf{S}^{-1} = \frac{\mathbf{H}^T\mathbf{P}_b}{\mathbf{HP}_b\mathbf{H}^T+\mathbf{R}}
 \end{align*}
 $$
+
 Analysis Error Covariance:
+
 $$
 \begin{align*}
 	\mathbf{P}_a = (\mathbf{I}-\mathbf{WH})\mathbf{P}_b
 \end{align*}
 $$
+
 $\mathbf{P}_b$ is static and is usually computed by running a model over a long period (weeks to months) and looking at the error statistics. Therefore $\mathbf{P}_b$ must be updated for every change in model configuration (dynamics, physics, domain).
 
 ## Characteristic overview of DA methods
