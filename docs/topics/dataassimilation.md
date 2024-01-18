@@ -353,3 +353,231 @@ $$
 $$
 
 The is the analytical solution to {==3DVar==}. In practice it is solved by an iterative method such as the steepest descent method, as we saw in the scalar example. Unfortunately for us, it is impossible to invert such huge matrices as $\mathbf{P}_b$ so we need to find approximations. Also {==3DVar==} assumes all observations to be taken at the time of the analysis. This is not the case in reality. $\mathbf{P}_b$ is also assumed to be constant in time, which is not the case in reality (not allowed to evolve dynamically).
+
+
+<figure markdown>
+  ![Image title](/images/3dvar.png){ width="400" }
+  <figcaption>Schematic figure of the 3DVar algorithm</figcaption>
+</figure>
+
+## Kalman-based Methods
+Optimal Interpolation, Kalman Filter and Kalman Ensemble filters are methods that are widely used in operational centers and they are all based on the Kalman equations, which we shall derive to broaden our understanding of the methods.
+
+An analysis is found by using a least square approach in the sense that we find an ’optimal’ analysis by minimising the errors.
+
+We write our analysis $\mathbf{x}_a$ as a linear combination of the background, $\mathbf{x}_b$ and some observations $\mathbf{y}$ as
+
+$$
+\mathbf{x}_a=\mathbf{Lx}_b+\mathbf{Wy}
+$$
+
+where $\mathbf{L}$ and $\mathbf{W}$ are weights that we need to find.
+
+One can derive the least square solution from this equation and at the same time get rid of one of the weights. This is a statistical approach trying to minimise the errors of the analysis.
+
+The errors of $\mathbf{x}_a$ and $\mathbf{x}_b$ can be written as
+
+$$
+\begin{align*}
+\mathbf{e}_a=&\ \mathbf{x}_a-\mathbf{x}_t \\
+\mathbf{e}_b=&\ \mathbf{x}_b-\mathbf{x}_t
+\end{align*}
+$$
+
+where $\mathbf{x}_t$ is the true (unknown) state. A linear observation process can be defined as
+
+$$
+\mathbf{y}=\mathbf{Hx}_t+\mathbf{b}_0
+$$
+
+where $\mathbf{H}$ is a matrix representing a linear transformation between the true variables into the observed ones (also called a forward operator) and $\mathbf{b}_0$ is the observational error.
+
+Assume that the observation error have zero mean and covariance $\mathbf{R}$,
+
+$$
+\begin{align*}
+\mathbb{E}(\mathbf{b}_0) =& 0 \\
+\mathbb{E}(\mathbf{b}_0\mathbf{b}_0^T) =& \mathbf{R}_k\delta_{kk'}
+\end{align*}
+$$
+
+where $\delta_{kk'}$ is the dirac-delta function.
+
+Also assume that the observations errors and model errors are uncorrelated
+
+$$
+\mathbb{E}(\mathbf{b}_t\mathbf{b}_0^T)=0
+$$
+
+Substitung the errors of the analysis and background into our analysis equation and subtracting $\mathbf{x}_t$ we get
+
+$$
+\mathbf{e}_a=\underbrace{\mathbf{Le}_b}_{\text{Background Error}}+\underbrace{\mathbf{Wb}_0}_{\text{Observational Error}}+\underbrace{(\mathbf{L}+\mathbf{WH}-\mathbf{I})\mathbf{x}_t}_{\text{Bias}}
+$$
+
+Assuming that the forecast error is unbiased ($\mathbb{E}(\mathbf{e}_b)=\mathbb{E}(\mathbf{x}_b-\mathbf{x}_t)=0$), the condition $(\mathbf{L}+\mathbf{WH}-\mathbf{I})\mathbb{E}(\mathbf{x}_t)=0$ must be met. In general $\mathbb{E}(\mathbf{x}_t)\neq 0$ so to obtain an unbiased analysis we can write the first weight in terms of the second as
+
+$$
+\mathbf{L}=\mathbf{I}-\mathbf{WH}
+$$
+
+Substituting this into the analysis equation we get the Kalman analysis equation
+
+$$
+\begin{align*}
+\mathbf{x}_a=&\mathbf{x}_b+\mathbf{W}\underbrace{(\mathbf{y}-\mathbf{Hx}_b)}_{\text{Innovation}} \\
+=&\mathbf{x}_b+\mathbf{Wd}
+\end{align*}
+$$
+
+### Dimension
+
+$n=\text{Total number of grid points}\times\text{number of model variables}$
+
+$\mathbf{x}$: State vector of size $n$
+
+$\mathbf{W}$: Weight matrix of size $p\times n$ where $p$ is the number of observations
+
+$\mathbf{y}$: Observation vector of size $p$
+
+$\mathbf{H}$: Matrix of size $n\times p$
+
+### Derivation of the weight
+
+At this point $\mathbf{W}$ is still unknown to us. $\mathbf{W}$ chosen such that the variances are minimised. Consider the error covariance of the analysis,
+
+$$
+\begin{align*}
+	\mathbf{P}_a=\text{cov}[\mathbf{x}_t-\mathbf{x}_a]=
+	\left[ {\begin{array}{cccc}
+	\sigma_{1,1}^2 & \sigma_{1,2}^2 & \dots & \sigma_{1,n}^2 \\
+	\sigma_{2,1}^2 & \sigma_{2,2}^2 & \dots & \sigma_{2,n}^2 \\
+	\vdots         & \vdots         & \ddots & \vdots \\
+	\sigma_{m,1}^2 & \sigma_{m,2}^2 & \dots & \sigma_{m,n}^2
+	\end{array} } \right]
+\end{align*}
+$$
+
+Note that the variances are the trace of the error covariance matrix. This can be expanded by using the Kalman analysis equation and $\mathbf{y}=\mathbf{Hx}_t+\mathbf{b}_0$ to get
+
+$$
+\begin{align*}
+	\mathbf{P}_a = \text{cov}[(\mathbf{I}-\mathbf{WH})(\mathbf{x}_t-\mathbf{x}_b)-\mathbf{Wb}_0].
+\end{align*}
+$$
+
+This can be simplified by using the covariance matrix identity, $\text{cov}(\mathbf{AB})=\mathbf{A}\text{cov}(\mathbf{B})\mathbf{A}^T$:
+
+$$
+\begin{align*}
+	\mathbf{P}_a = (\mathbf{I}-\mathbf{WH})\mathbf{P}_b(\mathbf{I}-\mathbf{WH})^T+\mathbf{WRW}^T,
+\end{align*}
+$$
+
+where $\mathbf{P}_b=\text{cov}(\mathbf{x}_t-\mathbf{x}_b)$ and $\mathbf{R}=\text{cov}(\mathbf{b}_0)$.
+
+We expand by using that $\mathbf{I}=\mathbf{I}^T$ and defining $\mathbf{S}=\mathbf{HP}_b\mathbf{H}^T+\mathbf{R}$ to get
+
+$$
+\begin{align*}
+	\mathbf{P}_a = \mathbf{P}_b - \mathbf{W}^T\mathbf{H}^T\mathbf{P}_b-\mathbf{WHP}_b+\mathbf{WSW}^T.
+\end{align*}
+$$
+
+Recall that we want to minimise the trace of the error covariance matrix (to minimise the variances). We take the derivative of the trace of $\mathbf{P}_a$ with respect to $\mathbf{W}$ and setting it equal to 0 to find the minimum (hint: Use the matrix identity $\nabla_A\text{Tr}(\mathbf{AB})=\mathbf{B}^T$).
+
+$$
+\begin{align*}
+	\frac{\partial\text{Tr}(\mathbf{P}_a)}{\partial\mathbf{W}} = -2(\mathbf{HP}_b)^T + 2\mathbf{WS} \equiv 0.
+\end{align*}
+$$
+
+Using that $\mathbf{P}_b$ is symetric ($\mathbf{P}_b=\mathbf{P}_b^T$) and solving for $\mathbf{W}$ yields the optimal weight
+
+$$
+\begin{align*}
+	\mathbf{W}=\mathbf{H}^T\mathbf{P}_b\mathbf{S}^{-1} = \frac{\mathbf{H}^T\mathbf{P}_b}{\mathbf{HP}_b\mathbf{H}^T+\mathbf{R}}
+\end{align*}
+$$
+
+This is called the Kalman gain and is the optimal weight that minimises the variances of the analysis.
+
+### Understanding the Kalman gain
+It is important to get an intuitive understanding of the Kalman gain. The Kalman gain is a measure of how much we trust the observations. If the observation error is large, the Kalman gain will be small and vice versa. If the background error is large, the Kalman gain will be small and vice versa.
+
+Recall that $\mathbf{R}$ is the observational error covariance matrix and $\mathbf{P}_b$ is the background error covariance matrix.
+
+If the {==observational error==} is much larger than the {==model error==} the Kalman gain will go towards 0, making the innovation term in equation small, such that observations are given a low weight.
+
+On the other hand, if the {==model error==} is much larger than the {==observational error==} the weight will go towards 1, given the innovation term a high weight in the analysis equation.
+
+One advantage of the Kalman system is that we get the error of the analysis directly by computing $\mathbf{P}_a$. This is not the case for the variational methods. However, we can now simplify the equation for $\mathbf{P}_a$ by multiplying the Kalman gain with $\mathbf{W}^T\mathbf{S}$ to get
+
+$$
+\mathbf{W}^T\mathbf{SW} = \mathbf{P}_b\mathbf{H}^T\mathbf{W}^T
+$$
+
+Substituting this into the equation for $\mathbf{P}_a$ we get
+
+$$
+\mathbf{P}_a=(\mathbf{I}-\mathbf{WH})\mathbf{P}_b
+$$
+
+The Kalman filter and OI methods are very similar with some important differences though. In the Kalman Filter, $\mathbf{P}_b$ is dynamic, hence updated with each analysis. In Optimal Interpolation (OI) $\mathbf{P}_b$ is static, hence constant in time. Due to the dynamic $\mathbf{P}_b$ in the Kalman Filter it is for example used partly in auto-piloting in airplanes and self-driving cars.
+
+### The Kalman Filter Algorithm
+
+The Kalman Filter algorithm is a recursive algorithm which has a prediction step and an update step.
+
+{==Prediction step==}
+
+$$
+\begin{align*}
+\mathbf{x}_f=&\mathbf{Mx}_a \\
+\mathbf{P}_f=&\mathbf{MP}_a\mathbf{M}^T+\mathbf{Q}
+\end{align*}
+$$
+
+{==Update step==}
+
+$$
+\begin{align*}
+\mathbf{K}=& \mathbf{P}_f\mathbf{H}^T(\mathbf{HP}_f\mathbf{H}^T+\mathbf{R})^{-1} \\
+\mathbf{x}_a=&\mathbf{x}_f+\mathbf{K}(\mathbf{y}-\mathbf{Hx}_f) \\
+\mathbf{P}_a=&(\mathbf{I}-\mathbf{KH})\mathbf{P}_f
+\end{align*}
+$$
+
+Here $\mathbf{K}=\mathbf{W}$ is used for consistency with the literature. $\mathbf{Q}$ is the forecast error covariance. $\mathbf{M}$ is the linear tangent model and $\mathbf{M}^T$ is its adjoint. $\mathbf{M}$ is the operator that forwards the model in time from the analysis.
+
+## Optimal Interpolation (OI) equations
+
+Analysis Equation:
+$$
+\begin{align*}
+	\mathbf{x}_a=\mathbf{x}_b+\mathbf{W}(\mathbf{y}-\mathbf{Hx}_b)=\mathbf{x}_b+\mathbf{Wd}
+\end{align*}
+$$
+Optimal Weight:
+$$
+\begin{align*}
+	\mathbf{W}=\mathbf{H}^T\mathbf{P}_b\mathbf{S}^{-1} = \frac{\mathbf{H}^T\mathbf{P}_b}{\mathbf{HP}_b\mathbf{H}^T+\mathbf{R}}
+\end{align*}
+$$
+Analysis Error Covariance:
+$$
+\begin{align*}
+	\mathbf{P}_a = (\mathbf{I}-\mathbf{WH})\mathbf{P}_b
+\end{align*}
+$$
+$\mathbf{P}_b$ is static and is usually computed by running a model over a long period (weeks to months) and looking at the error statistics. Therefore $\mathbf{P}_b$ must be updated for every change in model configuration (dynamics, physics, domain).
+
+## Characteristic overview of DA methods
+
+|       | Method      |        | Observations |          | Covariance |         |
+|-------|-------------|:------:|--------------|:--------:|------------|:-------:|
+|       | Variational | Kalman | Sequential   | Smoother | Static     | Dynamic |
+| 3DVar |      x      |        |       x      |          |      x     |         |
+| 4DVar |      x      |        |              |     x    |     (x)    |    x    |
+| OI    |             |    x   |       x      |          |      x     |         |
+| KF    |             |    x   |       x      |          |            |    x    |
