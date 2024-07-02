@@ -22,3 +22,7 @@
 on modifications to the visibility scheme in the nowcasting model at DMI**, DMI Report No. 16-23, Danish
 Meteorological Institute.
     * Link: [https://www.dmi.dk/fileadmin/user_upload/Rapporter/TR/2016/fog_tst_v3.pdf](https://www.dmi.dk/fileadmin/user_upload/Rapporter/TR/2016/fog_tst_v3.pdf)
+
+- Xiaohua Yang, Kasper Stener Hintz, Carlos Peralta Aros, Bjarne Amstrup, (2021), **DMI Report 21-31 Danish Regional Atmospheric Reanalysis. Final scientific report of the 2020 National Centre for Climate Research Work Package 3.2.1, Regional Reanalysis Pilot.**
+    * Link: [https://www.dmi.dk/fileadmin/Rapporter/2021/DMI_Report_21-31.pdf](https://www.dmi.dk/fileadmin/Rapporter/2021/DMI_Report_21-31.pdf)
+
