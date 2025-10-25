@@ -1,5 +1,13 @@
 # Publications
 
+- Xiaohua Yang, Carlos Peralta, Bjarne Amstrup, Kasper Stener Hintz, Søren Borg Thorsen, Leif Denby, Simon Kamuk Christiansen, Hauke Schulz, Sebastian Pelt, Mathias Schreiner, **DANRA: The Kilometer-Scale Danish Regional Atmospheric Reanalysis**, Arxiv (Pre-print)
+    * DOI: 10.48550/arXiv.2510.04681
+    * Link: [10.48550/arXiv.2510.04681](10.48550/arXiv.2510.04681)
+
+- Simon Adamov, Joel Oskarsson, Leif Denby, Tomas Landelius, Kasper Hintz, Simon Christiansen, Irene Schicker, Carlos Osuna, Fredrik Lindsten, Oliver Fuhrer, Sebastian Schemm, **Building Machine Learning Limited Area Models: Kilometer-Scale Weather Forecasting in Realistic Settings**, Arxiv (Pre-print)
+    * DOI: 10.48550/arXiv.2504.09340
+    * Link: [https://doi.org/10.48550/arXiv.2504.09340](https://doi.org/10.48550/arXiv.2504.09340)
+
 - Kasper S. Hintz, Callie McNicholas, Roger Randriamampianina, Hywel T. P. Williams, Bruce Macpherson, Marion Mittermaier, Jeanette Onvlee‐Hooimeijer, Balázs Szintai, **Crowd‐sourced observations for short‐range numerical weather prediction: Report from EWGLAM/SRNWP Meeting 2019**, Atmospheric Science Letters, 22, 6 (2021)
     * DOI: 10.1002/asl.1031
     * Link: [https://doi.org/10.1002/asl.1031](https://doi.org/10.1002/asl.1031)
